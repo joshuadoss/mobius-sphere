@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Möbius Sphere</title>
+<meta name="description" content="Move a sphere above the complex plane and watch a Möbius transformation happen.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,500;0,600;1,500&family=Public+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="./style.css">
+<script type="module" src="./app.js"></script>
+</head>
+<body>
+<main class="wrap">
+  <header>
+    <h1>Möbius <em>Sphere</em></h1>
+    <p class="lede">Every Möbius transformation is a sphere moving above the plane. A light at the top of the sphere shines its pattern onto the plane. Move the sphere and watch the plane, and the formula, change.</p>
+  </header>
+
+  <div class="bench">
+    <div class="view">
+      <canvas id="view" aria-label="3D view of a patterned sphere above the complex plane"></canvas>
+      <div class="legend" aria-hidden="true">
+        <span><i class="sw" style="background: var(--lamp)"></i>light (projection point)</span>
+        <span><i class="sw" style="background: var(--zero)"></i>0 and where it lands</span>
+        <span><i class="sw" style="background: var(--ray)"></i>∞ and where it lands</span>
+      </div>
+      <div class="views" role="group" aria-label="Camera">
+        <button type="button" id="view-angled" data-view="angled">3D</button>
+        <button type="button" id="view-top" data-view="top">Top</button>
+        <button type="button" id="view-side" data-view="side">Side</button>
+      </div>
+      <div class="hint">Drag to orbit · pinch or scroll to zoom</div>
+    </div>
+
+    <div class="panel">
+      <section class="card" aria-label="Moves">
+        <p class="label">Moves</p>
+        <div class="moves">
+          <button type="button" id="p-translate" data-preset="translate">Slide<small>z + b</small></button>
+          <button type="button" id="p-dilate" data-preset="dilate">Raise<small>k·z</small></button>
+          <button type="button" id="p-rotate" data-preset="rotate">Spin<small>e<sup>iθ</sup>z</small></button>
+          <button type="button" id="p-invert" data-preset="invert">Tip over<small>1/z</small></button>
+          <button type="button" id="p-combo" class="wide" data-preset="combo">All at once<small>(az + b)/(cz + d)</small></button>
+        </div>
+        <div class="row2">
+          <button type="button" id="p-tour" class="tour" data-preset="tour">Play the tour</button>
+          <button type="button" id="p-reset" data-preset="reset">Reset</button>
+        </div>
+      </section>
+
+      <section class="card" aria-label="Sphere position">
+        <p class="label">Sphere</p>
+        <div class="sliders">
+          <label class="sl" for="s-x">Slide x<input type="range" id="s-x" min="-2" max="2" step="0.01" value="0"><output id="v-x">0.00</output></label>
+          <label class="sl" for="s-y">Slide y<input type="range" id="s-y" min="-2" max="2" step="0.01" value="0"><output id="v-y">0.00</output></label>
+          <label class="sl" for="s-h">Height<input type="range" id="s-h" min="0.05" max="2" step="0.01" value="0.5"><output id="v-h">×1.00</output></label>
+          <label class="sl" for="s-yaw">Spin<input type="range" id="s-yaw" min="-3.1416" max="3.1416" step="0.01" value="0"><output id="v-yaw">0°</output></label>
+          <label class="sl" for="s-pitch">Tip<input type="range" id="s-pitch" min="-3.1416" max="3.1416" step="0.01" value="0"><output id="v-pitch">0°</output></label>
+        </div>
+      </section>
+
+      <section class="card" aria-label="Current transformation">
+        <p class="label">Current transformation</p>
+        <div class="formula">
+          <span><i>T</i>(<i>z</i>) =</span>
+          <div class="frac">
+            <div class="num"><span class="co">(<b id="co-a">1.00</b>)<i>z</i> + (<b id="co-b">0.00</b>)</span></div>
+            <div><span class="co">(<b id="co-c">0.00</b>)<i>z</i> + (<b id="co-d">1.00</b>)</span></div>
+          </div>
+        </div>
+        <dl class="facts">
+          <dt>T(0)</dt><dd id="w0">0.00</dd>
+          <dt>T(∞)</dt><dd id="winf">∞</dd>
+          <dt>Type</dt><dd><span class="chip" id="kind" data-kind="identity">identity</span></dd>
+        </dl>
+      </section>
+    </div>
+  </div>
+
+  <section class="key">
+    <h2>What each move does</h2>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Sphere</th><th>Plane</th><th>Formula</th><th>Type</th></tr></thead>
+        <tbody>
+          <tr><td>Slides sideways</td><td>Picture shifts</td><td><code>z + b</code></td><td>parabolic</td></tr>
+          <tr><td>Rises or sinks</td><td>Picture grows or shrinks</td><td><code>k·z</code>, k = height + ½</td><td>hyperbolic</td></tr>
+          <tr><td>Spins in place</td><td>Picture turns about 0</td><td><code>e<sup>iθ</sup>z</code></td><td>elliptic</td></tr>
+          <tr><td>Tips upside down</td><td>0 and ∞ trade places</td><td><code>1/z</code></td><td>elliptic</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">The sphere has radius ½ and starts resting on the plane, so tipping it over gives exactly 1/z. The light is always the sphere's top point, wherever the sphere goes. The white ring is the unit circle; watch it stay a circle (or become a line) no matter what you do.</p>
+  </section>
+
+  <footer>After Douglas Arnold and Jonathan Rogness, <a href="https://www-users.cse.umn.edu/~arnold/moebius/" target="_blank" rel="noopener">Möbius Transformations Revealed</a> (2007). Source code, with every step explained: <a href="https://github.com/joshuadoss/mobius-sphere" target="_blank" rel="noopener">github.com/joshuadoss/mobius-sphere</a>.</footer>
+</main>
+</body>
+</html>
